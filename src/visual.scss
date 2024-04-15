@@ -1,0 +1,102 @@
+$cell-width: 4em;
+$cell-border-width: 1px;
+$nums-colors: (
+	#00f,
+	green,
+	red,
+	navy,
+	maroon,
+	teal,
+	#000,
+	rgb(212, 0, 255),
+	rgb(136, 134, 3)
+);
+$show-ids: false;
+
+@mixin set-colors($colors, $key) {
+	@for $i from 1 through length($colors) {
+		&[data-#{$key}='#{$i}'] {
+			color: nth($colors, $i);
+		}
+	}
+}
+
+html {
+	height: 100%;
+}
+body {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+	margin: 0;
+	background-color: rgb(214, 239, 255);
+}
+
+.field {
+	position: relative;
+
+	font-size: $cell-width;
+	font-family: monospace;
+	white-space: nowrap;
+
+	text-align: center;
+	display: inline-grid;
+	grid-template-columns: repeat(
+		3,
+		calc((1em + $cell-border-width * 2) * 3 + $cell-border-width * 2)
+	);
+	border: $cell-border-width * 2 rgb(87, 87, 87) solid;
+	.region {
+		display: grid;
+		grid-template-columns: repeat(3, calc(1em + $cell-border-width * 2));
+		border: $cell-border-width rgb(92, 92, 92) solid;
+		.cell {
+			position: relative;
+			@if $show-ids {
+				&::before {
+					color: black;
+					position: absolute;
+					left: 0.1em;
+					height: 100%;
+
+					font-size: 0.2em;
+					display: inline-block;
+					content: attr(data-cell-id) ' ';
+				}
+			}
+
+			cursor: pointer;
+			&[data-value] {
+				display: inline-flex;
+				justify-content: center;
+				align-items: center;
+			}
+			&:has([data-guess]) {
+				display: grid;
+				grid-template-columns: repeat(3, 0.333em);
+			}
+
+			[data-guess] {
+				text-align: center;
+				vertical-align: top;
+				display: inline-flex;
+				justify-content: center;
+				align-items: center;
+				height: 1em;
+				width: 1em;
+				font-size: 0.333em;
+				@include set-colors($nums-colors, guess);
+			}
+			width: 1em;
+			height: 1em;
+
+			background: rgb(255, 255, 255);
+			border: $cell-border-width rgb(172, 172, 172) solid;
+			text-align: center;
+			vertical-align: top;
+
+			@include set-colors($nums-colors, value);
+		}
+	}
+}
